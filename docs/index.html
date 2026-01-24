@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>AI-QGen | Generate Questions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- FONT -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/generate.css" />
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="logo">AI-QGen</div>
+    <nav>
+      <a class="active">Generate</a>
+      <a href="evaluate.html">Evaluate</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main class="page">
+
+    <!-- HERO -->
+    <section class="hero">
+      <h1>AI-Powered Question Generator</h1>
+      <p>Configure, upload, and generate exam-ready questions using AI.</p>
+    </section>
+
+    <!-- CAPABILITIES -->
+    <section class="capabilities">
+      <div class="capability"><span>📄</span><p>Multi-Format Input</p></div>
+      <div class="capability"><span>⚙️</span><p>Configurable Exam Patterns</p></div>
+      <div class="capability"><span>🤖</span><p>AI-Based Evaluation</p></div>
+      <div class="capability"><span>📥</span><p>Exportable Reports</p></div>
+    </section>
+
+    <!-- STEPS -->
+    <div class="steps">
+      <div class="step active">1 Configure</div>
+      <div class="step">2 Upload</div>
+      <div class="step">3 Generate</div>
+    </div>
+
+    <section class="glass-card">
+
+      <!-- HOW IT WORKS -->
+      <div class="how-it-works">
+        <button type="button" class="how-toggle" id="howToggle">
+          How it works
+        </button>
+
+        <div class="how-content" id="howContent">
+          <ol>
+            <li>Upload study material (PDF, DOCX, images, notes)</li>
+            <li>Select exam format and structure</li>
+            <li>Configure difficulty and number of questions</li>
+            <li>Generate and download instantly</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- CONFIG -->
+      <div class="config-grid">
+
+        <div class="field">
+          <label>University Format</label>
+          <select id="university">
+            <option value="">Select</option>
+            <option>Anna University</option>
+            <option>VTU</option>
+            <option>JNTU</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Question Format</label>
+          <select id="qformat">
+            <option>MCQ</option>
+            <option>2 Marks</option>
+            <option>5 Marks</option>
+            <option>10 Marks</option>
+            <option>16 Marks</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Subject Name</label>
+          <input id="subject" type="text" placeholder="Machine Learning">
+        </div>
+
+        <div class="field">
+          <label>Subject Code</label>
+          <input type="text" placeholder="CS8691">
+        </div>
+
+        <div class="field">
+          <label>No. of Questions</label>
+          <input type="number" value="10">
+        </div>
+
+        <div class="field">
+          <label>Complexity</label>
+          <select>
+            <option>Easy</option>
+            <option selected>Medium</option>
+            <option>Hard</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- UPLOAD -->
+      <div class="upload-zone" id="uploadZone">
+        <span id="uploadText">
+          Drag & drop study material<br>
+          <small>PDF · DOCX · Images · TXT</small>
+        </span>
+        <input type="file" id="fileInput" />
+      </div>
+
+      <!-- ACTION -->
+      <button
+        type="button"
+        class="primary-btn disabled"
+        id="generateBtn"
+        disabled>
+        Generate Questions
+      </button>
+
+      <!-- OUTPUT -->
+      <section class="output" id="output"></section>
+
+      <!-- DOWNLOAD -->
+      <div class="download-actions">
+        <button type="button" class="ghost-btn">Download PDF</button>
+        <button type="button" class="ghost-btn">Download DOCX</button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    © 2026 AI-QGen · Smart Learning System
+  </footer>
+
+  <!-- GLOBAL SAFETY NET -->
+  <script>
+    document.addEventListener("submit", e => e.preventDefault());
+  </script>
+
+  <script src="js/generate.js"></script>
+</body>
+</html>

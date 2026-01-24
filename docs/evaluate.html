@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI-QGen | Evaluation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/evaluate.css" />
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">AI-QGen</div>
+  <nav>
+    <a href="index.html">Generate</a>
+    <a class="active">Evaluate</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<main class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>AI Answer Evaluation</h1>
+    <p>Upload question paper and student responses for automated evaluation.</p>
+  </section>
+
+  <!-- MAIN CARD -->
+  <section class="glass-card">
+
+    <!-- UPLOAD GRID -->
+    <div class="grid">
+
+      <!-- QUESTION PAPER -->
+      <div class="block">
+        <h3>Question Paper</h3>
+        <div class="upload" id="paperUpload">
+          <span id="paperText">Upload question paper (PDF / DOCX)</span>
+          <input type="file" id="paperInput" hidden>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="settings">
+          <h4>Evaluation Settings</h4>
+
+          <label>Evaluation Mode</label>
+          <select>
+            <option>Automatic (AI)</option>
+            <option>Manual Review</option>
+          </select>
+
+          <label>Marking Scheme</label>
+          <select>
+            <option>Moderate</option>
+            <option>Strict</option>
+            <option>Lenient</option>
+          </select>
+
+          <label>Maximum Marks</label>
+          <input type="number" value="100">
+        </div>
+      </div>
+
+      <!-- ANSWERS -->
+      <div class="block">
+        <h3>Student Answers</h3>
+
+        <textarea id="answerText"
+          placeholder="Paste student answers here..."></textarea>
+
+        <div class="upload small" id="answerUpload">
+          <span id="answerTextFile">Or upload answer file</span>
+          <input type="file" id="answerInput" hidden>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ACTION -->
+    <button class="primary-btn disabled" id="evaluateBtn" disabled>
+      Evaluate Answers
+    </button>
+
+    <!-- PROGRESS -->
+    <div class="progress" id="progress">
+      Evaluating answers using AI…
+    </div>
+
+    <!-- RESULTS -->
+    <section class="results" id="results">
+
+      <!-- CRITERIA -->
+      <div class="criteria">
+        <span class="chip active">Concept Accuracy</span>
+        <span class="chip active">Keyword Coverage</span>
+        <span class="chip active">Structure</span>
+        <span class="chip">Grammar</span>
+      </div>
+
+      <!-- SCORE -->
+      <div class="score-card">
+        <div class="score">78<span>/100</span></div>
+        <p>Good understanding with minor gaps</p>
+      </div>
+
+      <!-- PERFORMANCE -->
+      <div class="performance">
+        <h3>Section-wise Performance</h3>
+
+        <div class="bar"><label>Concept Understanding</label><span style="width:80%"></span></div>
+        <div class="bar"><label>Answer Structure</label><span style="width:65%"></span></div>
+        <div class="bar"><label>Clarity</label><span style="width:70%"></span></div>
+      </div>
+
+      <!-- COMPARISON -->
+      <div class="comparison">
+        <h3>Answer Comparison (Sample)</h3>
+        <div class="compare-grid">
+          <div>
+            <h4>Expected Answer</h4>
+            <p>Explains supervised learning with labeled training data.</p>
+          </div>
+          <div>
+            <h4>Student Answer</h4>
+            <p>Defines learning but misses labeled data explanation.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXPLAINABILITY -->
+      <div class="explain">
+        <h3>How AI Evaluated</h3>
+        <ul>
+          <li>Matched key concepts from reference answers</li>
+          <li>Detected missing explanations</li>
+          <li>Analyzed structure and clarity</li>
+        </ul>
+      </div>
+
+      <!-- MANUAL -->
+      <div class="manual">
+        <h3>Manual Review (Future Scope)</h3>
+        <input type="number" placeholder="Adjust score (+/-)">
+        <textarea placeholder="Teacher remark (optional)"></textarea>
+      </div>
+
+      <!-- DOWNLOAD -->
+      <div class="download">
+        <button class="ghost-btn">Download PDF</button>
+        <button class="ghost-btn">Download DOCX</button>
+      </div>
+
+    </section>
+
+  </section>
+
+</main>
+
+<footer>
+  © 2026 AI-QGen · Smart Learning System
+</footer>
+
+<script src="js/evaluate.js"></script>
+</body>
+</html>
