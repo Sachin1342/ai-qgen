@@ -1,58 +1,115 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
-from typing import List
-import random
+"""
+Generate API endpoint - generates questions based on keywords
+"""
+from flask import Blueprint, request, jsonify
+import json
 
-router = APIRouter()
+generate_bp = Blueprint('generate', __name__, url_prefix='/api')
 
-VOCAB = {
-    "easy": [
-        "Define {}.",
-        "What is {}?",
-        "State the meaning of {}."
-    ],
-    "medium": [
-        "Explain the concept of {}.",
-        "Describe {} with an example.",
-        "Discuss {} briefly."
-    ],
-    "hard": [
-        "Analyze the importance of {}.",
-        "Explain {} in detail.",
-        "Discuss advantages and limitations of {}."
-    ]
-}
 
-DISTRACTORS = [
-    "An unrelated concept",
-    "A partially correct idea",
-    "A commonly confused term",
-    "None of the above"
-]
-
-class GenerateRequest(BaseModel):
-    keywords: List[str]
-    count: int
-    difficulty: str
-    qtype: str   # mcq | descriptive
-
-@router.post("/generate")
-def generate(req: GenerateRequest):
+def generate_mcq_questions(keywords: list, count: int = 5, difficulty: str = 'medium') -> list:
+    """
+    Generate MCQ questions (placeholder - would use AI model in production)
+    """
     questions = []
-    templates = VOCAB.get(req.difficulty, VOCAB["medium"])
 
-    for kw in req.keywords[:req.count]:
-        if req.qtype == "mcq":
-            correct = f"Correct explanation of {kw}"
-            options = random.sample(DISTRACTORS, 3) + [correct]
-            random.shuffle(options)
+    # Simple template-based generation for demo
+    templates = {
+        'easy': [
+            f"Which of the following is related to {{keyword}}?\na) {{keyword}}\nb) Other\nc) Something\nd) Nothing",
+            f"What is {{keyword}}?\na) Definition 1\nb) Definition 2\nc) Something else\nd) None of the above",
+        ],
+        'medium': [
+            f"Explain the relationship between {{keyword}} and other concepts?",
+            f"What is the significance of {{keyword}} in the context of this material?",
+        ],
+        'hard': [
+            f"Analyze the implications of {{keyword}} and provide a comprehensive explanation.",
+            f"Compare {{keyword}} with related concepts and discuss the differences.",
+        ]
+    }
 
-            questions.append({
-                "question": f"What best describes {kw}?",
-                "options": options,
-                "answer": correct
-            })
+    selected_templates = templates.get(difficulty.lower(), templates['medium'])
+
+    for i, keyword in enumerate(keywords[:count]):
+        question_data = {
+            'question': f"{i+1}. What is {keyword}?",
+            'options': [
+                f"Definition of {keyword}",
+                "Alternative concept 1",
+                "Alternative concept 2",
+                "Incorrect definition"
+            ],
+            'answer': 'a) Definition of {{keyword}}'.replace('{{keyword}}', keyword)
+        }
+        questions.append(question_data)
+
+    return questions
+
+
+def generate_descriptive_questions(keywords: list, count: int = 5, difficulty: str = 'medium') -> list:
+    """
+    Generate descriptive questions (placeholder - would use AI model in production)
+    """
+    questions = []
+
+    difficulty_templates = {
+        'easy': 'Define {{keyword}}.',
+        'medium': 'Explain {{keyword}} and its significance.',
+        'hard': 'Provide a comprehensive analysis of {{keyword}} including its applications and implications.',
+    }
+
+    template = difficulty_templates.get(difficulty.lower(), difficulty_templates['medium'])
+
+    for i, keyword in enumerate(keywords[:count]):
+        question = {
+            'question': template.replace('{{keyword}}', keyword),
+            'options': []
+        }
+        questions.append(question)
+
+    return questions
+
+
+@generate_bp.route('/generate', methods=['POST'])
+def generate():
+    """
+    Generate questions based on keywords
+
+    Request body:
+        - keywords: List of keywords to base questions on
+        - count: Number of questions to generate (default: 10)
+        - difficulty: Difficulty level (easy/medium/hard)
+        - qtype: Question type (mcq/descriptive)
+
+    Returns:
+        - questions: List of generated questions
+    """
+    try:
+        data = request.get_json()
+
+        keywords = data.get('keywords', [])
+        count = data.get('count', 10)
+        difficulty = data.get('difficulty', 'medium')
+        qtype = data.get('qtype', 'mcq')
+
+        if not keywords or len(keywords) == 0:
+            return jsonify({'detail': 'No keywords provided'}), 400
+
+        # Ensure count doesn't exceed available keywords
+        count = min(count, len(keywords))
+
+        # Generate questions based on type
+        if qtype.lower() == 'mcq':
+            questions = generate_mcq_questions(keywords, count, difficulty)
         else:
-            questions.append(random.choice(templates).format(kw))
+            questions = generate_descriptive_questions(keywords, count, difficulty)
 
-    return {"questions": questions}
+        return jsonify({
+            'questions': questions,
+            'count': len(questions),
+            'message': 'Questions generated successfully'
+        }), 200
+
+    except Exception as e:
+        return jsonify({'detail': f'Generation error: {str(e)}'}), 500

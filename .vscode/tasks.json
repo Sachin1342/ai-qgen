@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start Backend Server",
+			"type": "shell",
+			"command": "python"
+		},
+		{
+			"label": "Start Backend Server",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"c:\\Users\\sachi\\OneDrive\\Desktop\\ai-qgen\\backend\\start.py"
+			],
+			"isBackground": true
+		}
+	]
+}

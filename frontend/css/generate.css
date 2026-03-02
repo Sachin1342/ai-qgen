@@ -64,23 +64,61 @@
   color: #EAD7C7;              /* readable accent text */
 }
 
+/* FILE INPUT STYLING */
+#fileInput {
+  display: none;
+}
+
 /* UPLOAD */
 .upload-zone {
-  border: 2px dashed var(--accent);
+  border: 2px solid var(--accent);
   border-radius: 14px;
-  padding: 30px;
+  padding: 50px 30px;
   text-align: center;
   cursor: pointer;
   margin-bottom: 26px;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  background: rgba(234,215,199,0.08);
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  font-weight: 500;
+  pointer-events: auto;
 }
 
 .upload-zone:hover {
-  background: rgba(234,215,199,0.1);
+  background: rgba(234,215,199,0.18);
+  border-color: rgba(234,215,199,1);
   transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(234,215,199,0.25);
+}
+
+.upload-zone:active {
+  transform: translateY(-2px);
 }
 
 /* BUTTONS */
+.upload-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--accent);
+  color: #082424;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.upload-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(234,215,199,0.3);
+}
+
 .primary-btn {
   width: 100%;
   padding: 14px;
@@ -153,6 +191,13 @@
 .upload-zone.file-selected {
   border-style: solid;
   background: rgba(234,215,199,0.12);
+  border-color: #4CAF50;
+}
+
+.upload-zone.file-uploaded {
+  border-style: solid;
+  background: rgba(76,175,80,0.1);
+  border-color: #4CAF50;
 }
 
 /* SUMMARY */

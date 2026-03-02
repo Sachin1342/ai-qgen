@@ -120,12 +120,17 @@
       </div>
 
       <!-- UPLOAD -->
-      <div class="upload-zone" id="uploadZone">
-        <span id="uploadText">
-          Drag & drop study material<br>
-          <small>PDF · DOCX · Images · TXT</small>
-        </span>
-        <input type="file" id="fileInput" />
+      <div id="uploadContainer" style="margin-bottom: 26px;">
+        <input type="file" id="fileInput" accept=".pdf,.docx,.doc,.txt,.md,.jpg,.jpeg,.png,.gif,.bmp,.xlsx,.csv,text/*,image/*" />
+        <div class="upload-zone" id="uploadZone">
+          <div style="text-align: center;">
+            <div style="font-size: 2.5em; margin-bottom: 12px;">📤</div>
+            <span id="uploadText" style="font-size: 1.1em; font-weight: 600;">
+              Click here or drag & drop to upload<br>
+              <small style="font-size: 0.85em;">PDF · DOCX · TXT · Images · Any format</small>
+            </span>
+          </div>
+        </div>
       </div>
 
       <!-- ACTION -->
@@ -142,8 +147,8 @@
 
       <!-- DOWNLOAD -->
       <div class="download-actions">
-        <button type="button" class="ghost-btn">Download PDF</button>
-        <button type="button" class="ghost-btn">Download DOCX</button>
+        <button type="button" class="ghost-btn" id="exportPdfBtn" disabled>Download PDF</button>
+        <button type="button" class="ghost-btn" id="exportDocxBtn" disabled>Download DOCX</button>
       </div>
 
     </section>

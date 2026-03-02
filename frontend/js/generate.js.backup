@@ -1,0 +1,313 @@
+document.addEventListener("submit", e => e.preventDefault());
+
+// ============================================================
+// DOM ELEMENTS
+// ============================================================
+const fileInput = document.getElementById("fileInput");
+const uploadZone = document.getElementById("uploadZone");
+const uploadText = document.getElementById("uploadText");
+const generateBtn = document.getElementById("generateBtn");
+const output = document.getElementById("output");
+const exportPdfBtn = document.getElementById("exportPdfBtn");
+const exportDocxBtn = document.getElementById("exportDocxBtn");
+const howToggle = document.getElementById("howToggle");
+const howContent = document.getElementById("howContent");
+
+let keywords = [];
+let questions = [];
+
+const API_BASE = "http://127.0.0.1:8001";
+
+console.log("=== AI-QGen Initialize ===");
+console.log("✓ All elements loaded");
+
+// ============================================================
+// HOW IT WORKS TOGGLE
+// ============================================================
+if (howToggle && howContent) {
+  howToggle.onclick = () => {
+    howContent.style.display = howContent.style.display === "none" ? "block" : "none";
+  };
+}
+
+// ============================================================
+// FILE UPLOAD - SIMPLE DIRECT APPROACH
+// ============================================================
+
+// When user clicks upload zone, open file picker
+if (uploadZone && fileInput) {
+  uploadZone.addEventListener("click", (e) => {
+    console.log("✓ Upload zone clicked");
+    fileInput.click();
+  });
+}
+
+// When file is selected, upload it
+if (fileInput) {
+  fileInput.addEventListener("change", async (e) => {
+    // Prevent any page refresh
+    e.preventDefault();
+    e.stopPropagation();
+
+    const file = fileInput.files[0];
+    if (!file) {
+      console.log("No file selected");
+      return;
+    }
+
+    console.log("✓ File selected:", file.name);
+
+    // Update UI
+    if (uploadText) uploadText.innerText = "⏳ Uploading...";
+
+    // Create FormData
+    const fd = new FormData();
+    fd.append("file", file);
+
+    try {
+      console.log("→ Uploading to backend...");
+      const res = await fetch(`${API_BASE}/api/upload`, {
+        method: "POST",
+        body: fd
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.detail || "Upload failed");
+      }
+
+      // Success!
+      keywords = data.keywords || [];
+      const wordCount = data.word_count || 0;
+
+      console.log("✓ Upload successful!");
+      console.log("✓ Keywords:", keywords.length);
+      console.log("✓ Words:", wordCount);
+
+      // Update UI with success
+      if (uploadText) {
+        uploadText.innerHTML = `
+          <div style="color: #4CAF50; font-weight: 700;">✅ ${file.name} uploaded successfully!</div>
+          <small style="margin-top: 8px; display: block; color: #b7dcdc;">📊 ${wordCount} words · 🏷️ ${keywords.length} keywords extracted</small>
+        `;
+      }
+
+      // Add success styling to upload zone
+      if (uploadZone) {
+        uploadZone.classList.add("file-uploaded");
+        uploadZone.classList.remove("file-selected");
+      }
+
+      // Enable generate button
+      if (generateBtn) {
+        generateBtn.disabled = false;
+        generateBtn.classList.remove("disabled");
+      }
+
+      // Reset file input so same file can be uploaded again
+      fileInput.value = '';
+
+    } catch (error) {
+      console.error("✗ Upload error:", error);
+      if (uploadText) {
+        uploadText.innerHTML = `
+          <div style="color: #ff6b6b;">❌ Upload failed</div>
+          <small style="color: #ff6b6b; margin-top: 4px; display: block;">${error.message}</small>
+        `;
+      }
+      if (generateBtn) {
+        generateBtn.disabled = true;
+        generateBtn.classList.add("disabled");
+      }
+    }
+  });
+}
+
+// ============================================================
+// DRAG AND DROP
+// ============================================================
+if (uploadZone) {
+  uploadZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    uploadZone.style.background = "rgba(234,215,199,0.25)";
+    uploadZone.style.borderColor = "rgba(234,215,199,1)";
+  });
+
+  uploadZone.addEventListener("dragleave", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    uploadZone.style.background = "rgba(234,215,199,0.08)";
+    uploadZone.style.borderColor = "var(--accent)";
+  });
+
+  uploadZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    uploadZone.style.background = "rgba(234,215,199,0.08)";
+    uploadZone.style.borderColor = "var(--accent)";
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      console.log("✓ File dropped");
+      fileInput.files = files;
+
+      // Trigger change event
+      const event = new Event('change', { bubbles: true });
+      fileInput.dispatchEvent(event);
+    }
+  });
+}
+
+// ============================================================
+// GENERATE QUESTIONS
+// ============================================================
+if (generateBtn) {
+  generateBtn.addEventListener("click", async (e) => {
+    // Prevent any page refresh
+    e.preventDefault();
+    e.stopPropagation();
+
+    const noQuestionsInput = document.querySelector("input[type='number']");
+    const count = noQuestionsInput ? parseInt(noQuestionsInput.value) : 10;
+
+    const selects = document.querySelectorAll("select");
+    const difficulty = selects[selects.length - 1]?.value || "medium";
+
+    const qformatSelect = document.getElementById("qformat");
+    const qformat = qformatSelect?.value || "MCQ";
+    const qtype = qformat === "MCQ" ? "mcq" : "descriptive";
+
+    console.log("✓ Generating questions...");
+
+    if (output) {
+      output.style.display = "block";
+      output.innerHTML = "<p style='text-align:center; color: var(--muted);'>⏳ Generating...</p>";
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/api/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          keywords,
+          count,
+          difficulty,
+          qtype
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Generation failed");
+
+      questions = data.questions;
+      console.log("✓ Generated", questions.length, "questions");
+
+      displayQuestions(questions);
+
+      if (exportPdfBtn) exportPdfBtn.disabled = false;
+      if (exportDocxBtn) exportDocxBtn.disabled = false;
+
+    } catch (error) {
+      console.error("✗ Generation error:", error);
+      if (output) {
+        output.innerHTML = `<p style="color: #ff6b6b;">❌ ${error.message}</p>`;
+      }
+    }
+  });
+}
+
+// ============================================================
+// DISPLAY QUESTIONS
+// ============================================================
+function displayQuestions(questions) {
+  if (!output) return;
+
+  output.style.display = "block";
+  output.innerHTML = "<h3>📋 Generated Questions</h3>";
+
+  questions.forEach((q, i) => {
+    let html = `<div class="question"><h4>${i + 1}. ${q.question}</h4>`;
+
+    if (q.options && q.options.length > 0) {
+      html += "<ul>";
+      q.options.forEach((opt, j) => {
+        html += `<li>${String.fromCharCode(97 + j)}) ${opt}</li>`;
+      });
+      html += "</ul>";
+      if (q.answer) {
+        html += `<p><strong>Answer:</strong> ${q.answer}</p>`;
+      }
+    } else {
+      html += "<p style='font-style: italic; color: var(--muted);'>(Descriptive answer required)</p>";
+    }
+
+    html += "</div>";
+    output.innerHTML += html;
+  });
+}
+
+// ============================================================
+// EXPORT PDF
+// ============================================================
+if (exportPdfBtn) {
+  exportPdfBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("✓ Exporting to PDF...");
+    try {
+      const res = await fetch(`${API_BASE}/api/export/pdf`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "Generated Questions",
+          questions
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Export failed");
+
+      console.log("✓ PDF ready");
+      window.open(`${API_BASE}${data.download_url}`, '_blank');
+
+    } catch (error) {
+      alert(`PDF export failed: ${error.message}`);
+      console.error(error);
+    }
+  });
+}
+
+// ============================================================
+// EXPORT DOCX
+// ============================================================
+if (exportDocxBtn) {
+  exportDocxBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("✓ Exporting to DOCX...");
+    try {
+      const res = await fetch(`${API_BASE}/api/export/docx`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "Generated Questions",
+          questions
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Export failed");
+
+      console.log("✓ DOCX ready");
+      window.open(`${API_BASE}${data.download_url}`, '_blank');
+
+    } catch (error) {
+      alert(`DOCX export failed: ${error.message}`);
+      console.error(error);
+    }
+  });
+}
+
+console.log("✅ AI-QGen script loaded successfully!");

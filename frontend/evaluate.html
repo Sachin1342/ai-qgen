@@ -42,9 +42,13 @@
       <!-- QUESTION PAPER -->
       <div class="block">
         <h3>Question Paper</h3>
-        <div class="upload" id="paperUpload">
-          <span id="paperText">Upload question paper (PDF / DOCX)</span>
-          <input type="file" id="paperInput" hidden>
+        <div class="upload" id="uploadZone">
+          <div style="font-size: 2.2em; margin-bottom: 12px;">📤</div>
+          <span id="uploadText" style="font-size: 1.05em; font-weight: 600;">
+            Click here or drag & drop<br>
+            <small style="font-size: 0.85em;">PDF · DOCX · TXT · Images · Any format</small>
+          </span>
+          <input type="file" id="fileInput" hidden>
         </div>
 
         <!-- SETTINGS -->
@@ -89,10 +93,8 @@
       Evaluate Answers
     </button>
 
-    <!-- PROGRESS -->
-    <div class="progress" id="progress">
-      Evaluating answers using AI…
-    </div>
+    <!-- RESULT -->
+    <div id="result"></div>
 
     <!-- RESULTS -->
     <section class="results" id="results">
